@@ -1,0 +1,40 @@
+# Запуск: docker-compose up -d
+services:
+  database:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - spring-postgres
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  backend:
+      build: .
+      ports:
+        - "8080:8080"
+      environment:
+        SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/postgres
+        SPRING_LIQUIBASE_URL: jdbc:postgresql://database:5432/postgres
+      networks:
+        - spring-postgres
+      depends_on:
+        database:
+          condition: service_started
+#  swagger-ui:
+#    image: swaggerapi/swagger-ui:latest
+#    ports:
+#      - "8081:8080"
+#    environment:
+#      URL: http://backend:8080/api-docs
+#    depends_on:
+#      backend:
+#        condition: service_started
+volumes:
+  db-data:
+networks:
+  spring-postgres:

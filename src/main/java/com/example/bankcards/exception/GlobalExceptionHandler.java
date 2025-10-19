@@ -16,6 +16,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({
             CardNotFoundException.class,
             CardStatusNotActiveException.class,
+            CardStatusNotWaitingForBlockingException.class,
             SendingMoneyIsProhibitedException.class,
             UserFoundException.class,
             UserNotFoundException.class

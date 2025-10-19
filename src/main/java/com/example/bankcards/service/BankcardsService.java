@@ -2,10 +2,7 @@ package com.example.bankcards.service;
 
 import com.example.bankcards.dto.CardDto;
 import com.example.bankcards.dto.CardDtoForCreation;
-import com.example.bankcards.exception.CardNotFoundException;
-import com.example.bankcards.exception.CardStatusNotActiveException;
-import com.example.bankcards.exception.SendingMoneyIsProhibitedException;
-import com.example.bankcards.exception.UserNotFoundException;
+import com.example.bankcards.exception.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -24,4 +21,10 @@ public interface BankcardsService {
     void sendSumFromOneCardToAnotherOne(UUID id, String numberFrom, String numberTo, Double sum) throws CardStatusNotActiveException, CardNotFoundException, SendingMoneyIsProhibitedException;
 
     void createCard(CardDtoForCreation cardDto) throws UserNotFoundException;
+
+    void blockCard(UUID id) throws CardStatusNotWaitingForBlockingException, CardNotFoundException;
+
+    void activateCard(UUID id) throws CardNotFoundException, CardStatusNotWaitingForBlockingException;
+
+    void deleteCard(UUID id) throws CardNotFoundException;
 }

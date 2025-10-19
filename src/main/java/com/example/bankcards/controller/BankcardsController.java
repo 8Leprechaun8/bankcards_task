@@ -3,10 +3,7 @@ package com.example.bankcards.controller;
 import com.example.bankcards.dto.CardDto;
 import com.example.bankcards.dto.CardDtoForCreation;
 import com.example.bankcards.entity.User;
-import com.example.bankcards.exception.CardNotFoundException;
-import com.example.bankcards.exception.CardStatusNotActiveException;
-import com.example.bankcards.exception.SendingMoneyIsProhibitedException;
-import com.example.bankcards.exception.UserNotFoundException;
+import com.example.bankcards.exception.*;
 import com.example.bankcards.service.BankcardsService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +33,7 @@ public class BankcardsController {
      *
      * @return Возвращает список всех неудаленных карт
      */
-    @GetMapping("/all")
+    @GetMapping("/admin/all")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Page<CardDto> findAll(@RequestParam(name = "page", defaultValue = "0") int page,
                                  @RequestParam(name = "size", defaultValue = "10") int size,
@@ -52,7 +49,7 @@ public class BankcardsController {
      *
      * @return Возвращает список всех неудаленных карт конкретного пользователя
      */
-    @GetMapping("/all/{userId}")
+    @GetMapping("/admin/all/{userId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Page<CardDto> findAllForUser(@PathVariable(name = "userId") UUID userId,
                                         @RequestParam(name = "page", defaultValue = "0") int page,
@@ -64,7 +61,7 @@ public class BankcardsController {
         return bankcardsService.findAllForUser(userId, pageable);
     }
 
-    @GetMapping("/all/mycards")
+    @GetMapping("/user-and-admin/all/mycards")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public Page<CardDto> findAllForUserByUser(@RequestParam(name = "page", defaultValue = "0") int page,
                                         @RequestParam(name = "size", defaultValue = "10") int size,
@@ -76,7 +73,7 @@ public class BankcardsController {
         return bankcardsService.findAllForUser(user.getId(), pageable);
     }
 
-    @GetMapping("/all/mycards/balance")
+    @GetMapping("/user/all/mycards/balance")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Map<String, Object>> getBalanceForCardByUser(@RequestParam(name = "number") String number) throws CardNotFoundException {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -89,7 +86,7 @@ public class BankcardsController {
         );
     }
 
-    @PutMapping("/all/mycards/blocking")
+    @PutMapping("/user/all/mycards/blocking")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<String> askForCardBlockingByUser(@RequestParam(name = "number") String number) throws CardNotFoundException, CardStatusNotActiveException {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -97,7 +94,7 @@ public class BankcardsController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/all/mycards/sending-money")
+    @PutMapping("/user-and-admin/all/mycards/sending-money")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> askForCardBlockingByUser(@RequestParam(name = "numberFrom") String numberFrom,
                                                            @RequestParam(name = "numberTo") String numberTo,
@@ -108,12 +105,34 @@ public class BankcardsController {
     }
 
 
-    @PostMapping("/create")
+    @PostMapping("/admin/create")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<CardDto> createCard(@RequestBody CardDtoForCreation cardDto) throws UserNotFoundException {
         bankcardsService.createCard(cardDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PutMapping("/admin/blocking")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<CardDto> blockCard(@RequestParam(name = "id") UUID id) throws CardStatusNotWaitingForBlockingException, CardNotFoundException {
+        bankcardsService.blockCard(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/admin/activating")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<CardDto> activateCard(@RequestParam(name = "id") UUID id) throws CardNotFoundException, CardStatusNotWaitingForBlockingException {
+        bankcardsService.activateCard(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/admin/deleting")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<CardDto> deleteCard(@RequestParam(name = "id") UUID id) throws CardNotFoundException {
+        bankcardsService.deleteCard(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
     private Object getPrincipal() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();

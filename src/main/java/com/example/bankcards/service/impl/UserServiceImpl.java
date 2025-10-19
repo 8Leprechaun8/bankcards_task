@@ -1,6 +1,7 @@
 package com.example.bankcards.service.impl;
 
 import com.example.bankcards.dto.UserDto;
+import com.example.bankcards.entity.Role;
 import com.example.bankcards.entity.User;
 import com.example.bankcards.exception.UserNotFoundException;
 import com.example.bankcards.mapper.UserMapper;
@@ -13,9 +14,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -100,6 +103,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public Page<UserDto> findAll(Pageable pageable) {
         Long count = repository.count();
         Page<User> userPage = repository.findAll(pageable);
@@ -109,5 +113,19 @@ public class UserServiceImpl implements UserService {
                         .collect(Collectors.toList()) :
                 Collections.emptyList();
         return new PageImpl(userDtoList, pageable, count);
+    }
+
+    @Override
+    @Transactional
+    public void changeUserStatusByUserId(UUID userId) throws UserNotFoundException {
+        User user = repository.getReferenceById(userId);
+        if (user == null) {
+            throw new UserNotFoundException("Пользователь не найден");
+        }
+        if (Role.ROLE_USER.equals(user.getRole())) {
+            repository.changeUserStatusByUserId(userId, Role.ROLE_ADMIN.name());
+        } else {
+            repository.changeUserStatusByUserId(userId, Role.ROLE_USER.name());
+        }
     }
 }

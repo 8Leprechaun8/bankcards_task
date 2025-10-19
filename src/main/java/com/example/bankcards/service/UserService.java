@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface UserService {
 
@@ -22,4 +23,6 @@ public interface UserService {
     UserDetailsService userDetailsService();
 
     Page<UserDto> findAll(Pageable pageable);
+
+    void changeUserStatusByUserId(UUID userId) throws UserNotFoundException;
 }

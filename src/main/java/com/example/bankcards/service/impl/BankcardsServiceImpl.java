@@ -5,10 +5,7 @@ import com.example.bankcards.dto.CardDtoForCreation;
 import com.example.bankcards.entity.Card;
 import com.example.bankcards.entity.CardStatus;
 import com.example.bankcards.entity.User;
-import com.example.bankcards.exception.CardNotFoundException;
-import com.example.bankcards.exception.CardStatusNotActiveException;
-import com.example.bankcards.exception.SendingMoneyIsProhibitedException;
-import com.example.bankcards.exception.UserNotFoundException;
+import com.example.bankcards.exception.*;
 import com.example.bankcards.mapper.CardMapper;
 import com.example.bankcards.repository.CardRepository;
 import com.example.bankcards.repository.UserRepository;
@@ -128,5 +125,44 @@ public class BankcardsServiceImpl implements BankcardsService {
         } else {
             throw new CardNotFoundException("Не найдена карта");
         }
+    }
+
+    @Override
+    @Transactional
+    public void blockCard(UUID id) throws CardStatusNotWaitingForBlockingException, CardNotFoundException {
+        Card card = cardRepository.getReferenceById(id);
+        if (card.getArchived()) {
+            throw new CardNotFoundException("Карта не найдена");
+        }
+        if (!CardStatus.WAITING_FOR_BLOCKING.equals(card.getStatus())) {
+            throw new CardStatusNotWaitingForBlockingException("Карта не находится в состоянии ожидания блокирования");
+        }
+        card.setStatus(CardStatus.BLOCKED);
+        cardRepository.save(card);
+    }
+
+    @Override
+    @Transactional
+    public void activateCard(UUID id) throws CardNotFoundException, CardStatusNotWaitingForBlockingException {
+        Card card = cardRepository.getReferenceById(id);
+        if (card.getArchived()) {
+            throw new CardNotFoundException("Карта не найдена");
+        }
+        if (!CardStatus.BLOCKED.equals(card.getStatus())) {
+            throw new CardStatusNotWaitingForBlockingException("Карта не находится в состоянии блокировки");
+        }
+        card.setStatus(CardStatus.ACTIVE);
+        cardRepository.save(card);
+    }
+
+    @Override
+    @Transactional
+    public void deleteCard(UUID id) throws CardNotFoundException {
+        Card card = cardRepository.getReferenceById(id);
+        if (card.getArchived()) {
+            throw new CardNotFoundException("Карта не найдена");
+        }
+        card.setArchived(true);
+        cardRepository.save(card);
     }
 }

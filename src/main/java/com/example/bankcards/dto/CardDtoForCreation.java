@@ -10,7 +10,7 @@ import java.util.UUID;
 public class CardDtoForCreation {
 
     @NotNull(message = "Number is mandatory")
-    @Pattern(regexp = "[0-9][0-9][0-9][0-9][ ][0-9][0-9][0-9][0-9][ ][0-9][0-9][0-9][0-9][ ][0-9][0-9][0-9][0-9]")
+    @Pattern(regexp = "^[0-9][0-9][0-9][0-9][ ][0-9][0-9][0-9][0-9][ ][0-9][0-9][0-9][0-9][ ][0-9][0-9][0-9][0-9]$")
     private String number;
 
     @NotNull(message = "Expiration date is mandatory")

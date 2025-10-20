@@ -101,6 +101,12 @@
             <artifactId>jackson-annotations</artifactId>
             <version>2.20</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.42</version>
+        </dependency>
         <!--
 pom.xml — файл для управления зависимостями проекта.
 

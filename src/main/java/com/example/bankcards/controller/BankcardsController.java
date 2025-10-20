@@ -6,6 +6,7 @@ import com.example.bankcards.entity.User;
 import com.example.bankcards.exception.*;
 import com.example.bankcards.service.BankcardsService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -107,7 +108,7 @@ public class BankcardsController {
 
     @PostMapping("/admin/create")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<CardDto> createCard(@RequestBody CardDtoForCreation cardDto) throws UserNotFoundException {
+    public ResponseEntity<CardDto> createCard(@Valid @RequestBody CardDtoForCreation cardDto) throws UserNotFoundException {
         bankcardsService.createCard(cardDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }

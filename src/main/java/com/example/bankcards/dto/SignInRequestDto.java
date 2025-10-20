@@ -1,9 +1,13 @@
 package com.example.bankcards.dto;
 
+import jakarta.validation.constraints.NotNull;
+
 public class SignInRequestDto {
 
+    @NotNull(message = "Username is mandatory")
     private String username;
 
+    @NotNull(message = "Password is mandatory")
     private String password;
 
     public SignInRequestDto() {

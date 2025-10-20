@@ -1,21 +1,26 @@
 package com.example.bankcards.dto;
 
-import com.example.bankcards.entity.Role;
+import jakarta.validation.constraints.NotNull;
 
-import java.util.UUID;
 
 public class SignUpRequestDto {
 
+    @NotNull(message = "FirstName is mandatory")
     private String firstName;
 
+    @NotNull(message = "SecondName is mandatory")
     private String secondName;
 
+    @NotNull(message = "LastName is mandatory")
     private String lastName;
 
+    @NotNull(message = "Username is mandatory")
     private String username;
 
+    @NotNull(message = "Password is mandatory")
     private String password;
 
+    @NotNull(message = "Email is mandatory")
     private String email;
 
     public SignUpRequestDto() {

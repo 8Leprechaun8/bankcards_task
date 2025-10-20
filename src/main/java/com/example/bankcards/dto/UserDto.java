@@ -1,6 +1,7 @@
 package com.example.bankcards.dto;
 
 import com.example.bankcards.entity.Role;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 import java.util.UUID;
@@ -32,22 +33,31 @@ public class UserDto {
         this.cardList = cardList;
     }
 
+    @NotNull(message = "Id is mandatory")
     private UUID id;
 
+    @NotNull(message = "FirstName is mandatory")
     private String firstName;
 
+    @NotNull(message = "SecondName is mandatory")
     private String secondName;
 
+    @NotNull(message = "LastName is mandatory")
     private String lastName;
 
+    @NotNull(message = "Username is mandatory")
     private String username;
 
+    @NotNull(message = "Password is mandatory")
     private String password;
 
+    @NotNull(message = "Role is mandatory")
     private Role role;
 
+    @NotNull(message = "Email is mandatory")
     private String email;
 
+    @NotNull(message = "Archived-flag is mandatory")
     private Boolean isArchived;
 
     private List<CardDto> cardList;

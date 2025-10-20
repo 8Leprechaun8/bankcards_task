@@ -1,17 +1,31 @@
 package com.example.bankcards.dto;
 
 import com.example.bankcards.entity.CardStatus;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class CardDtoForCreation {
 
+    @NotNull(message = "Number is mandatory")
+    @Pattern(regexp = "[0-9][0-9][0-9][0-9][ ][0-9][0-9][0-9][0-9][ ][0-9][0-9][0-9][0-9][ ][0-9][0-9][0-9][0-9]")
     private String number;
+
+    @NotNull(message = "Expiration date is mandatory")
     private LocalDateTime expiration;
+
+    @NotNull(message = "Balance is mandatory")
     private Double balance;
+
+    @NotNull(message = "Status is mandatory")
     private CardStatus status;
+
+    @NotNull(message = "UserId is mandatory")
     private UUID userId;
+
+    @NotNull(message = "Archived-flag is mandatory")
     private Boolean isArchived;
 
     public String getNumber() {

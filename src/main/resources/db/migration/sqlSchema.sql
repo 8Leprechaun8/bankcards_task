@@ -154,3 +154,9 @@ VALUES ('38d79304-679c-4dde-8f09-6d7da92cf002', '1234 5678 0023 0023', NOW() + I
 --changeset dvoyevodin_17102025:34
 INSERT INTO cards (id, number, expiration, balance, status, user_id, archive_flag)
 VALUES ('1e2bc0e0-c6c0-4669-91c0-12ca83ed187a', '1234 5678 0024 0024', NOW() + INTERVAL '1 day', 700, 'ACTIVE', '55b5b405-2dd6-4f66-8280-5c0a22d9b95f', false);
+
+--changeset dvoyevodin_20102025:1
+ALTER TABLE cards ADD CONSTRAINT constraint_unique_number UNIQUE (number);
+
+--changeset dvoyevodin_20102025:2
+ALTER TABLE users ADD CONSTRAINT constraint_unique_login UNIQUE (login);

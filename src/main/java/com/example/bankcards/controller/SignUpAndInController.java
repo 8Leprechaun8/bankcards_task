@@ -6,6 +6,7 @@ import com.example.bankcards.dto.SignUpRequestDto;
 import com.example.bankcards.exception.UserFoundException;
 import com.example.bankcards.exception.UserNotFoundException;
 import com.example.bankcards.service.AuthenticationService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ public class SignUpAndInController {
      * @return Токен
      */
     @PostMapping("/sign-up")
-    public ResponseEntity<JwtAuthenticationResponseDto> signUp(@RequestBody SignUpRequestDto request) {
+    public ResponseEntity<JwtAuthenticationResponseDto> signUp(@Valid @RequestBody SignUpRequestDto request) {
         try {
             JwtAuthenticationResponseDto token = authenticationService.signUp(request);
             return new ResponseEntity<JwtAuthenticationResponseDto>(token, HttpStatus.OK);
@@ -48,7 +49,7 @@ public class SignUpAndInController {
      * @return Токен
      */
     @PostMapping("/sign-in")
-    public ResponseEntity<JwtAuthenticationResponseDto> signIn(@RequestBody SignInRequestDto request) {
+    public ResponseEntity<JwtAuthenticationResponseDto> signIn(@Valid @RequestBody SignInRequestDto request) {
         try {
             JwtAuthenticationResponseDto token = authenticationService.signIn(request);
             return new ResponseEntity<JwtAuthenticationResponseDto>(token, HttpStatus.OK);
